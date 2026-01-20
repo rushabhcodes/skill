@@ -17,9 +17,10 @@ Typical output includes:
 - `package.json`, `tsconfig.json`
 - `tscircuit.config.json`
 
-2) Preview locally
+2) Preview locally (interactive)
 - `tsci dev`
 - Opens a local preview server (commonly https://localhost:3020)
+- Note: For AI-driven iteration, prefer `tsci build` over `tsci dev`—dev mode is primarily for interactive visual feedback.
 
 3) Search the ecosystem
 - `tsci search "<query>"`
@@ -47,6 +48,10 @@ Useful flags
 - `--ignore-errors` (CI/automation)
 - `--ignore-warnings`
 - `--all-images` (emit PCB/schematic/3D renders into `dist/`)
+
+DRC (Design Rule Check)
+- DRC errors are often reported but can frequently be ignored during development.
+- Focus on getting the circuit correct first; DRC violations can be addressed later when preparing for manufacturing.
 
 7) Export (SVG/netlist/3D/library)
 - `tsci export <file> -f <format>`

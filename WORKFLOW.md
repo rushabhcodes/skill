@@ -22,13 +22,15 @@
 - Wire nets using `<trace />`
 - Keep schematic readable (use `schX/schY`), even if PCB placement is still rough
 
-6) Iterate with `tsci dev`
-- Fix connectivity errors first
-- Then placement, then routing
+6) Iterate with `tsci build`
+- Run `tsci build` to validate changes—this is the preferred iteration method for AI-driven development.
+- DRC (Design Rule Check) errors can often be ignored during development; focus on connectivity and component placement first.
+- Fix connectivity errors first, then placement, then routing.
+- Use `tsci dev` only when interactive visual preview is needed (not typical for AI iteration).
 
 7) Stabilize and regression-test
-- Use `tsci build` in CI or before sharing
-- Use `tsci snapshot` when you want visual regression checks for PCB/schematic
+- Use `tsci build` in CI or before sharing.
+- Use `tsci snapshot` when you want visual regression checks for PCB/schematic.
 
 8) Export what you need
 - `tsci export` for SVG/netlist/DSN/3D/library

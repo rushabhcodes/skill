@@ -41,9 +41,11 @@ When this Skill is active:
   - Schematic: `schX`, `schY`, `schRotation`, `schOrientation`
 - Use `<trace />` for connectivity; prefer net connections (`net.GND`, `net.VCC`, etc.) for power/ground.
 
-5) Preview and iterate
-- Run `tsci dev` and iterate from the PCB / schematic / 3D views.
+5) Build and iterate
+- Run `tsci build` to compile and validate the circuit.
+- DRC (Design Rule Check) errors can often be ignored during development—focus on getting the circuit correct first.
 - If routing struggles, reduce density, use `<group />` for sub-layouts, or change autorouter settings.
+- Use `tsci dev` only when you need interactive visual feedback (not typical for AI-driven iteration).
 
 6) Validate and export
 - Run `tsci build` (and optionally `tsci snapshot`) before sharing/publishing.
