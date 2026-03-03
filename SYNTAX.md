@@ -32,27 +32,111 @@ Units
 - Numbers are interpreted as mm.
 - Strings can include units (e.g., `"0.1in"`, `"2.54mm"`).
 
-## 3) Connectivity with `<trace />`
+## 3) Pin labels with `pinLabels`
+
+Use `pinLabels` to map physical pin numbers to meaningful names. This is essential for chips and ICs.
+
+```tsx
+<chip
+  name="U1"
+  footprint="qfp32"
+  pinLabels={{
+    pin1: ["GP0", "SPI0_RX", "I2C0_SDA", "UART0_TX"],
+    pin2: ["GP1", "SPI0_CS", "I2C0_SCL", "UART0_RX"],
+    pin3: "GND",
+    // ...
+  }}
+/>
+```
+
+With multi-alias, any of the names can be used in traces:
+
+```tsx
+<trace from="U1.GP0" to="U2.SDA" />
+<trace from="U1.SPI0_RX" to="U3.MISO" />
+```
+
+## 4) Pin attributes with `pinAttributes`
+
+Use `pinAttributes` to add semantic metadata to pins. This enables DRC checks, schematic arrows, and board-level pinout exposure.
+
+Example using a 555 timer (NE555):
+
+```tsx
+<chip
+  name="U1"
+  footprint="dip8"
+  pinLabels={{
+    pin1: "GND",
+    pin2: "TRIG",
+    pin3: "OUT",
+    pin4: "RESET",
+    pin5: "CTRL",
+    pin6: "THRES",
+    pin7: "DISCH",
+    pin8: "VCC",
+  }}
+  pinAttributes={{
+    VCC: { requiresPower: true },
+    RESET: { mustBeConnected: true },
+  }}
+/>
+```
+
+Available attributes:
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `requiresPower` | boolean | Signal goes INTO the chip (shows input arrow on schematic) |
+| `providesPower` | boolean | Signal comes OUT of the chip (shows output arrow on schematic) |
+| `mustBeConnected` | boolean | DRC error if this pin is left floating |
+| `includeInBoardPinout` | boolean | Expose this pin to the board-level pinout |
+
+## 5) Type-safe chip components
+
+For reusable chip components, define `pinLabels` as a const and use `ChipProps` for type safety:
+
+```tsx
+import type { ChipProps } from "tscircuit"
+
+const pinLabels = {
+  pin1: "VCC",
+  pin2: "GND",
+  pin3: ["SDA", "I2C_DATA"],
+  pin4: ["SCL", "I2C_CLK"],
+} as const
+
+export const MyChip = (props: ChipProps<typeof pinLabels>) => (
+  <chip
+    {...props}
+    pinLabels={pinLabels}
+    footprint="soic4"
+  />
+)
+```
+
+## 6) Connectivity with `<trace />`
 
 Connect pins with port selectors:
 
 ```tsx
-<trace from=".R1 > .pin1" to=".C1 > .pin1" />
+<trace from="R1.pin1" to="C1.pin1" />
 ```
 
 Connect to named nets. Net names must start with a letter or underscore and can only contain letters, numbers and underscores. 
 
 ```tsx
-<trace from=".U1 > .pin1" to="net.GND" />
-<trace from=".U1 > .pin8" to="net.VCC" />
-<trace from=".U1 > .pin3" to="net.V3_3" />
+<trace from="U1.pin1" to="net.GND" />
+<trace from="U1.pin8" to="net.VCC" />
 ```
+
+Pin labels (in `pinLabels`) can contain letters, numbers, and underscores. Unlike net names, pin labels **can** start with a number (e.g., `"3V3"` is valid).
 
 Useful trace props (optional)
 - `width` / `thickness`
 - `minLength` / `maxLength`
 
-## 4) Grouping for PCB layout
+## 7) Grouping for PCB layout
 
 Use `<group />` like a container to move/layout parts together.
 
@@ -66,11 +150,42 @@ Use `<group />` like a container to move/layout parts together.
 </board>
 ```
 
-## 5) Autorouter choices
+## 8) Schematic pin arrangement
 
-Boards and subcircuits can set an `autorouter` preset (e.g., `"auto"`, `"sequential-trace"`, `"auto-local"`, `"auto-cloud"`). For complex routing, cloud autorouting is often the most capable.
+Control how pins appear on the schematic symbol with `schPinArrangement`:
 
-## 6) Manufacturing helpers
+```tsx
+<chip
+  name="U1"
+  footprint="soic16"
+  pinLabels={{
+    pin1: "VCC1",
+    pin2: "IN1",
+    pin3: "IN2",
+    pin4: "IN3",
+    pin5: "IN4",
+    pin6: "GND1",
+    pin7: "GND2",
+    pin8: "VCC2",
+    pin9: "OUT1",
+    pin10: "OUT2",
+    pin11: "OUT3",
+    pin12: "OUT4",
+  }}
+  schPinArrangement={{
+    topSide: { pins: ["VCC1", "VCC2"], direction: "left-to-right" },
+    bottomSide: { pins: ["GND1", "GND2"], direction: "left-to-right" },
+    leftSide: { pins: ["IN1", "IN2", "IN3", "IN4"], direction: "top-to-bottom" },
+    rightSide: { pins: ["OUT1", "OUT2", "OUT3", "OUT4"], direction: "top-to-bottom" },
+  }}
+/>
+```
+
+Available sides: `leftSide`, `rightSide`, `topSide`, `bottomSide`
+- Left/right sides use `direction: "top-to-bottom"` or `"bottom-to-top"`
+- Top/bottom sides use `direction: "left-to-right"` or `"right-to-left"`
+
+## 9) Manufacturing helpers
 
 For turnkey assembly you will often want:
 - `supplierPartNumbers` (pin a specific supplier SKU/part number)
