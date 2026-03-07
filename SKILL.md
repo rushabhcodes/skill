@@ -42,12 +42,14 @@ When this Skill is active:
 - Use `<trace />` for connectivity; prefer net connections (`net.GND`, `net.VCC`, etc.) for power/ground.
 
 5) Build and iterate
+- Run `tsci check netlist` before `tsci check placement` and `tsci build` to catch connectivity issues early.
 - Run `tsci build` to compile and validate the circuit.
 - DRC (Design Rule Check) errors can often be ignored during development—focus on getting the circuit correct first.
 - If routing struggles, reduce density, use `<group />` for sub-layouts, or change autorouter settings.
 - Use `tsci dev` only when you need interactive visual feedback (not typical for AI-driven iteration).
 
 6) Validate and export
+- Run `tsci check netlist` before `tsci check placement` and `tsci build` when preparing to share/publish.
 - Run `tsci build` (and optionally `tsci snapshot`) before sharing/publishing.
 - Use `tsci export` for SVG/netlist/DSN/3D/library outputs.
 - For manufacturing, obtain fabrication outputs (Gerbers/BOM/PnP) from the export UI after `tsci dev`.

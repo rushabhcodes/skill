@@ -91,7 +91,11 @@ Tip: If someone has already imported the part, prefer the registry version—it 
 
 6) Build (generate circuit.json)
 
-Before building, it can be a good idea to check placement of the entire board or a specific component with `tsci check placement [file] [refdes]`
+Before placement checks or builds, run a netlist check first:
+- `tsci check netlist [file]`
+
+Then check placement of the entire board or a specific component:
+- `tsci check placement [file] [refdes]`
 
 - `tsci build` (auto-detects entrypoint)
 - `tsci build path/to/file.circuit.tsx`
