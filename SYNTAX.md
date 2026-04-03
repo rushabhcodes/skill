@@ -145,7 +145,42 @@ Useful trace props (optional)
 - `width` / `thickness`
 - `minLength` / `maxLength`
 
-## 8) Grouping for PCB layout
+## 8) `sel` net selectors
+
+Use `sel` when you want selector expressions with better type safety than raw strings:
+
+```tsx
+import { sel } from "tscircuit"
+
+<trace from={sel.U1.VCC} to={sel.net.GND} />
+```
+
+For common built-in nets, property access is fine:
+
+```tsx
+sel.net.GND
+sel.net.V3_3
+```
+
+For arbitrary custom nets, call `sel.net()` first:
+
+```tsx
+sel.net().USB_DP_RAW
+sel.net().USB_DM_RAW
+```
+
+If you want reusable typed custom nets, create a typed selector map once:
+
+```tsx
+import { sel } from "tscircuit"
+
+const nets = sel.net<"USB_DP_RAW" | "USB_DM_RAW">()
+
+nets.USB_DP_RAW
+nets.USB_DM_RAW
+```
+
+## 9) Grouping for PCB layout
 
 Use `<group />` like a container to move/layout parts together.
 
@@ -159,7 +194,7 @@ Use `<group />` like a container to move/layout parts together.
 </board>
 ```
 
-## 9) Schematic pin arrangement
+## 10) Schematic pin arrangement
 
 Control how pins appear on the schematic symbol with `schPinArrangement`:
 
@@ -194,7 +229,7 @@ Available sides: `leftSide`, `rightSide`, `topSide`, `bottomSide`
 - Left/right sides use `direction: "top-to-bottom"` or `"bottom-to-top"`
 - Top/bottom sides use `direction: "left-to-right"` or `"right-to-left"`
 
-## 10) Manufacturing helpers
+## 11) Manufacturing helpers
 
 For turnkey assembly you will often want:
 - `supplierPartNumbers` (pin a specific supplier SKU/part number)
