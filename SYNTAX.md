@@ -162,22 +162,15 @@ sel.net.GND
 sel.net.V3_3
 ```
 
-For arbitrary custom nets, call `sel.net()` first:
+If you want reusable typed custom nets, define them once and import them where needed:
 
 ```tsx
-sel.net().USB_DP_RAW
-sel.net().USB_DM_RAW
-```
-
-If you want reusable typed custom nets, create a typed selector map once:
-
-```tsx
+// nets.ts
 import { sel } from "tscircuit"
 
-const nets = sel.net<"USB_DP_RAW" | "USB_DM_RAW">()
+export const nets = sel.net<"MOTOR1_POS" | "MOTOR2_POS" | ... >()
 
-nets.USB_DP_RAW
-nets.USB_DM_RAW
+nets.MOTOR1_POS // "net.MOTOR1_POS"
 ```
 
 ## 9) Grouping for PCB layout

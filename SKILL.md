@@ -40,7 +40,7 @@ When this Skill is active:
   - PCB: `pcbX`, `pcbY`, `pcbRotation`, `layer`
   - Schematic: `schX`, `schY`, `schRotation`, `schOrientation`
 - Use `<trace />` for connectivity; prefer net connections (`net.GND`, `net.VCC`, etc.) for power/ground.
-- When using `sel` for nets, use `sel.net.GND`-style property access only for common built-in nets. For arbitrary custom nets, prefer `sel.net().USB_DP_RAW` for one-offs or `const nets = sel.net<"USB_DP_RAW" | "USB_DM_RAW">()` for reusable typed custom nets.
+- When using `sel` for nets, reserve `sel.net.GND`-style property access for common built-in nets. For custom nets, define and reuse a shared typed selector map in `nets.ts` such as `export const nets = sel.net<"MOTOR_POS" | "MOTOR_NEG" | ... >()`.
 
 5) Build and iterate
 - Run `tsci check netlist` before `tsci check placement` and `tsci build` to catch connectivity issues early.
