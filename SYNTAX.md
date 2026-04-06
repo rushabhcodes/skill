@@ -152,23 +152,17 @@ Use `sel` when you want selector expressions with better type safety than raw st
 ```tsx
 import { sel } from "tscircuit"
 
+// sel has common net names built-in (uncommon nets will fail type check)
 <trace from={sel.U1.VCC} to={sel.net.GND} />
 ```
 
-For common built-in nets, property access is fine:
-
-```tsx
-sel.net.GND
-sel.net.V3_3
-```
-
-If you want reusable typed custom nets, define them once and import them where needed:
+Best practice: For typed custom nets specific to your project, define them in `nets.ts` and import where needed:
 
 ```tsx
 // nets.ts
 import { sel } from "tscircuit"
 
-export const nets = sel.net<"MOTOR1_POS" | "MOTOR2_POS" | ... >()
+export const nets = sel.net<"MOTOR1_POS" | "MOTOR2_POS">()
 
 nets.MOTOR1_POS // "net.MOTOR1_POS"
 ```
